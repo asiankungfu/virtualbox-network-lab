@@ -1,5 +1,6 @@
 # virtualbox-network-lab
 
+[![CI](https://github.com/asiankungfu/virtualbox-network-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/asiankungfu/virtualbox-network-lab/actions/workflows/ci.yml)
 ![Linux](https://img.shields.io/badge/OS-Ubuntu%2022.04-E95420?logo=ubuntu&logoColor=white)
 ![Vagrant](https://img.shields.io/badge/Vagrant-2.x-1868F2?logo=vagrant&logoColor=white)
 ![VirtualBox](https://img.shields.io/badge/VirtualBox-7.x-183A61?logo=virtualbox&logoColor=white)

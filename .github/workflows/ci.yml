@@ -1,5 +1,6 @@
 name: CI
 
+# main への push と Pull Request のたびに自動実行する
 on:
   push:
     branches: [ main ]
