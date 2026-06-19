@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # 1) シェルスクリプトの静的解析（バグ・危険な書き方を検出）
+  shellcheck:
+    name: Shell スクリプト静的解析
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリを取得
+        uses: actions/checkout@v4
+
+      - name: ShellCheck 実行
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: ./provision      # provision/*.sh を対象
+          severity: error           # error のみで失敗（スタイル警告では落とさない）
+
+  # 2) Vagrantfile の Ruby 構文チェック
+  vagrantfile:
+    name: Vagrantfile 構文チェック
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリを取得
+        uses: actions/checkout@v4
+
+      - name: Ruby をセットアップ
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+
+      - name: 構文チェック (ruby -c)
+        run: ruby -c Vagrantfile
+
+  # 3) Nginx 設定ファイルの妥当性検証（web.sh と同じ手順を再現）
+  nginx-config:
+    name: Nginx 設定検証
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリを取得
+        uses: actions/checkout@v4
+
+      - name: Nginx をインストール
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nginx
+
+      - name: 設定を配置して nginx -t で検証
+        run: |
+          sudo cp config/nginx.conf /etc/nginx/sites-available/default
+          sudo ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+          sudo nginx -t
+
+  # 4) 必須ファイルが揃っているか構成チェック
+  structure:
+    name: ファイル構成チェック
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリを取得
+        uses: actions/checkout@v4
+
+      - name: 必須ファイルの存在確認
+        run: |
+          set -e
+          required="Vagrantfile provision/common.sh provision/web.sh provision/db.sh \
+                    config/nginx.conf config/mariadb.cnf .gitignore README.md LICENSE"
+          for f in $required; do
+            if [ -f "$f" ]; then
+              echo "OK: $f"
+            else
+              echo "MISSING: $f"
+              exit 1
+            fi
+          done
