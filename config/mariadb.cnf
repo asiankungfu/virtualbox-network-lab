@@ -1,0 +1,14 @@
+# 3.4 MariaDB 設定（/etc/mysql/mariadb.conf.d/99-custom.cnf として配置）
+# virtualbox-network-lab / db-server
+
+[mysqld]
+# 全インターフェースで受付（外部接続は UFW で web-server IP のみに制限）
+bind-address            = 0.0.0.0
+
+# 文字コード
+character-set-server    = utf8mb4
+collation-server        = utf8mb4_unicode_ci
+
+# 接続・パフォーマンス
+max_connections         = 100
+innodb_buffer_pool_size = 256M

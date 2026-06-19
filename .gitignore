@@ -1,0 +1,17 @@
+# 3.5 .gitignore
+
+# Vagrant の実行状態ファイル（サイズ大・環境依存）
+.vagrant/
+
+# ログファイル
+*.log
+
+# 環境変数ファイル（DB パスワード等）
+.env
+
+# エディタ一時ファイル
+*.swp
+*.swo
+
+# macOS メタデータ
+.DS_Store
